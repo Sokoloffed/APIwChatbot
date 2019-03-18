@@ -10,6 +10,7 @@ namespace RESTApi.Controllers
 {
     public class UsersController : ApiController
     {
+        [System.Web.Http.HttpGet]
         public IEnumerable<Users> Get()
         {
             using (TaskManagerDBEntities entities = new TaskManagerDBEntities())
@@ -18,19 +19,16 @@ namespace RESTApi.Controllers
             }
         }
 
+        [System.Web.Http.HttpGet]
         public Users Get(int ID)
         {
             using (TaskManagerDBEntities entities = new TaskManagerDBEntities())
             {
-                Users user = new Users();
-                user.id = ID;
-                user.username = "vasya";
-                user.password = "1111";
-                return user;
-                //return entities.Users.FirstOrDefault(i => i.id == ID);
+                return entities.Users.FirstOrDefault(i => i.id == ID);
             }
         }
 
+        [System.Web.Http.HttpGet]
         public Users Get(string name)
         {
             using (TaskManagerDBEntities entities = new TaskManagerDBEntities())
@@ -39,8 +37,9 @@ namespace RESTApi.Controllers
             }
         }
 
+        //[System.Web.Http.HttpGet]
         [HttpGet]
-        public Users GetViaTask(int id)
+        public Users ViaTask(int id)
         {
             using (TaskManagerDBEntities entities = new TaskManagerDBEntities())
             {
@@ -54,5 +53,27 @@ namespace RESTApi.Controllers
 
             }
         }
+        
+        [Route("api/Users/CreateUser/{ID}/name/password")]
+        [AcceptVerbs("GET", "POST")]
+        [HttpPost]
+        public string CreateUser(int ID, string name, string password)
+        {
+            using (TaskManagerDBEntities entities = new TaskManagerDBEntities())
+            {
+                Users defaultUser = new Users();
+                defaultUser.id = ID;
+                defaultUser.username = name;
+                defaultUser.password = password;
+                if(entities.Users.Where(t => (t.id == ID)).FirstOrDefault() != null)
+                {
+                    return "Attempt to add the existing user.";
+                }
+                entities.Users.Add(defaultUser);
+                entities.SaveChanges();
+                return "Success!";
+            }
+        }
+
     }
 }
