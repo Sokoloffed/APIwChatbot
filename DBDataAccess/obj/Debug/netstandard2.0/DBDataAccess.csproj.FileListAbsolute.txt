@@ -1,0 +1,9 @@
+C:\Users\admin\source\repos\RESTApi\DBDataAccess\bin\Debug\netstandard2.0\DBDataAccess.deps.json
+C:\Users\admin\source\repos\RESTApi\DBDataAccess\bin\Debug\netstandard2.0\DBDataAccess.dll
+C:\Users\admin\source\repos\RESTApi\DBDataAccess\obj\Debug\netstandard2.0\DBDataAccess.csprojAssemblyReference.cache
+C:\Users\admin\source\repos\RESTApi\DBDataAccess\obj\Debug\netstandard2.0\DBDataAccess.csproj.CoreCompileInputs.cache
+C:\Users\admin\source\repos\RESTApi\DBDataAccess\obj\Debug\netstandard2.0\DBDataAccess.AssemblyInfoInputs.cache
+C:\Users\admin\source\repos\RESTApi\DBDataAccess\obj\Debug\netstandard2.0\DBDataAccess.AssemblyInfo.cs
+C:\Users\admin\source\repos\RESTApi\DBDataAccess\bin\Debug\netstandard2.0\DBDataAccess.pdb
+C:\Users\admin\source\repos\RESTApi\DBDataAccess\obj\Debug\netstandard2.0\DBDataAccess.dll
+C:\Users\admin\source\repos\RESTApi\DBDataAccess\obj\Debug\netstandard2.0\DBDataAccess.pdb

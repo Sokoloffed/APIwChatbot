@@ -1,0 +1,162 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Хранилище TaskManagerDBModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Branches">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="branchname" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="description" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="creator_id" Type="int" Nullable="false" />
+    <Property Name="created_date" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="TaskBranch">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="task_id" Type="int" Nullable="false" />
+    <Property Name="branch_id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Tasks">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="taskname" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="description" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="date_begin" Type="datetime" Nullable="false" />
+    <Property Name="date_end" Type="datetime" />
+    <Property Name="status" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="creator_id" Type="int" Nullable="false" />
+    <Property Name="executor_id" Type="int" />
+  </EntityType>
+  <EntityType Name="UserBranch">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="user_id" Type="int" Nullable="false" />
+    <Property Name="branch_id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Users">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="username" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="password" Type="nvarchar" MaxLength="50" Nullable="false" />
+  </EntityType>
+  <EntityType Name="UserTask">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="user_id" Type="int" Nullable="false" />
+    <Property Name="task_id" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="Branch-TaskBranch">
+    <End Role="Branches" Type="Self.Branches" Multiplicity="1" />
+    <End Role="TaskBranch" Type="Self.TaskBranch" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Branches">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="TaskBranch">
+        <PropertyRef Name="branch_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="Branch-UserBranch">
+    <End Role="Branches" Type="Self.Branches" Multiplicity="1" />
+    <End Role="UserBranch" Type="Self.UserBranch" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Branches">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="UserBranch">
+        <PropertyRef Name="branch_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="Task-TaskBranch">
+    <End Role="Tasks" Type="Self.Tasks" Multiplicity="1" />
+    <End Role="TaskBranch" Type="Self.TaskBranch" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Tasks">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="TaskBranch">
+        <PropertyRef Name="task_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="Task-UserTask">
+    <End Role="Tasks" Type="Self.Tasks" Multiplicity="1" />
+    <End Role="UserTask" Type="Self.UserTask" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Tasks">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="UserTask">
+        <PropertyRef Name="task_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="User-UserBranch">
+    <End Role="Users" Type="Self.Users" Multiplicity="1" />
+    <End Role="UserBranch" Type="Self.UserBranch" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="UserBranch">
+        <PropertyRef Name="user_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="User-UserTask">
+    <End Role="Users" Type="Self.Users" Multiplicity="1" />
+    <End Role="UserTask" Type="Self.UserTask" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="UserTask">
+        <PropertyRef Name="user_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="Хранилище TaskManagerDBModelContainer">
+    <EntitySet Name="Branches" EntityType="Self.Branches" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TaskBranch" EntityType="Self.TaskBranch" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Tasks" EntityType="Self.Tasks" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserBranch" EntityType="Self.UserBranch" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserTask" EntityType="Self.UserTask" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="Branch-TaskBranch" Association="Self.Branch-TaskBranch">
+      <End Role="Branches" EntitySet="Branches" />
+      <End Role="TaskBranch" EntitySet="TaskBranch" />
+    </AssociationSet>
+    <AssociationSet Name="Branch-UserBranch" Association="Self.Branch-UserBranch">
+      <End Role="Branches" EntitySet="Branches" />
+      <End Role="UserBranch" EntitySet="UserBranch" />
+    </AssociationSet>
+    <AssociationSet Name="Task-TaskBranch" Association="Self.Task-TaskBranch">
+      <End Role="Tasks" EntitySet="Tasks" />
+      <End Role="TaskBranch" EntitySet="TaskBranch" />
+    </AssociationSet>
+    <AssociationSet Name="Task-UserTask" Association="Self.Task-UserTask">
+      <End Role="Tasks" EntitySet="Tasks" />
+      <End Role="UserTask" EntitySet="UserTask" />
+    </AssociationSet>
+    <AssociationSet Name="User-UserBranch" Association="Self.User-UserBranch">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="UserBranch" EntitySet="UserBranch" />
+    </AssociationSet>
+    <AssociationSet Name="User-UserTask" Association="Self.User-UserTask">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="UserTask" EntitySet="UserTask" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
