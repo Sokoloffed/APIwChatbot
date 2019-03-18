@@ -1,13 +1,12 @@
+C:\Users\admin\source\repos\RESTApi\DBAccess\bin\Debug\DBAccess.dll.config
 C:\Users\admin\source\repos\RESTApi\DBAccess\bin\Debug\DBAccess.dll
 C:\Users\admin\source\repos\RESTApi\DBAccess\bin\Debug\DBAccess.pdb
-C:\Users\admin\source\repos\RESTApi\DBAccess\obj\Debug\DBAccess.csprojAssemblyReference.cache
-C:\Users\admin\source\repos\RESTApi\DBAccess\obj\Debug\DBAccess.csproj.CoreCompileInputs.cache
-C:\Users\admin\source\repos\RESTApi\DBAccess\obj\Debug\DBAccess.dll
-C:\Users\admin\source\repos\RESTApi\DBAccess\obj\Debug\DBAccess.pdb
-C:\Users\admin\source\repos\RESTApi\DBAccess\bin\Debug\DBAccess.dll.config
 C:\Users\admin\source\repos\RESTApi\DBAccess\bin\Debug\EntityFramework.dll
 C:\Users\admin\source\repos\RESTApi\DBAccess\bin\Debug\EntityFramework.SqlServer.dll
 C:\Users\admin\source\repos\RESTApi\DBAccess\bin\Debug\EntityFramework.xml
 C:\Users\admin\source\repos\RESTApi\DBAccess\bin\Debug\EntityFramework.SqlServer.xml
 C:\Users\admin\source\repos\RESTApi\DBAccess\bin\Debug\ru\EntityFramework.resources.dll
+C:\Users\admin\source\repos\RESTApi\DBAccess\obj\Debug\DBAccess.csproj.CoreCompileInputs.cache
 C:\Users\admin\source\repos\RESTApi\DBAccess\obj\Debug\DBAccess.csproj.CopyComplete
+C:\Users\admin\source\repos\RESTApi\DBAccess\obj\Debug\DBAccess.dll
+C:\Users\admin\source\repos\RESTApi\DBAccess\obj\Debug\DBAccess.pdb

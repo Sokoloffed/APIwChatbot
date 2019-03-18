@@ -22,7 +22,12 @@ namespace RESTApi.Controllers
         {
             using (TaskManagerDBEntities entities = new TaskManagerDBEntities())
             {
-                return entities.Users.FirstOrDefault(i => i.id == ID);
+                Users user = new Users();
+                user.id = ID;
+                user.username = "vasya";
+                user.password = "1111";
+                return user;
+                //return entities.Users.FirstOrDefault(i => i.id == ID);
             }
         }
 
@@ -31,6 +36,22 @@ namespace RESTApi.Controllers
             using (TaskManagerDBEntities entities = new TaskManagerDBEntities())
             {
                 return entities.Users.FirstOrDefault(i => i.username.Equals(name));
+            }
+        }
+
+        [HttpGet]
+        public Users GetViaTask(int id)
+        {
+            using (TaskManagerDBEntities entities = new TaskManagerDBEntities())
+            {
+                //int u_id = entities.UserTask.FirstOrDefault(i => i.task_id == id).user_id;
+                //return entities.Users.FirstOrDefault(i => i.id == u_id);
+                Users user = new Users();
+                user.id = id;
+                user.username = $"{id}";
+                user.password = "p";
+                return user;
+
             }
         }
     }
