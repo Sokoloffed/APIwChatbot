@@ -8,21 +8,26 @@ using DBAccess;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Data.Entity;
+using RESTApi.Models;
 
 
 namespace RESTApi.Controllers
 {
     public class UsersController : ApiController
     {
-        [System.Web.Http.HttpGet]
-        public IEnumerable<Users> Get()
-        {
-            using (TaskManagerDBEntities entities = new TaskManagerDBEntities())
-            {
-                //entities.Configuration.LazyLoadingEnabled = false;
+        ModelFactory modelFactory;
 
-                return entities.Users.ToList();
-            }
+        public UsersController()
+        {
+            this.modelFactory = new ModelFactory();
+        }
+
+
+        [System.Web.Http.HttpGet]
+        public IEnumerable<UsersModel> Get()
+        {
+            DataRepository repository = new DataRepository();
+            return repository.GetAllUsers().ToList().Select(c => modelFactory.Create(c));
         }
 
         [System.Web.Http.HttpGet]

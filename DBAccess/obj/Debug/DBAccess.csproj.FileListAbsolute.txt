@@ -14,4 +14,3 @@ C:\Users\admin\source\repos\RESTApi\DBAccess\bin\Debug\Newtonsoft.Json.dll
 C:\Users\admin\source\repos\RESTApi\DBAccess\bin\Debug\Newtonsoft.Json.pdb
 C:\Users\admin\source\repos\RESTApi\DBAccess\bin\Debug\Newtonsoft.Json.xml
 C:\Users\admin\source\repos\RESTApi\DBAccess\bin\Debug\ru\EntityFramework.SqlServer.resources.dll
-C:\Users\admin\source\repos\RESTApi\DBAccess\obj\Debug\DBAccess.csprojAssemblyReference.cache

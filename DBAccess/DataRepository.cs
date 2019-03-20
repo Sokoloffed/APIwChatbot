@@ -6,14 +6,12 @@ using System.Threading.Tasks;
 
 namespace DBAccess
 {
-    class DataRepository
+    public class DataRepository
     {
         public IQueryable<Users> GetAllUsers()
         {
-            using (TaskManagerDBEntities ctx = new TaskManagerDBEntities())
-            {
-                return ctx.Users;
-            }
+            TaskManagerDBEntities ctx = new TaskManagerDBEntities();
+            return ctx.Users;
         }
 
         public IQueryable<Users> GetUserViaID(int ID)
