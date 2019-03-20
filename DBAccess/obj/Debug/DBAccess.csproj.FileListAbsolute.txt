@@ -10,3 +10,7 @@ C:\Users\admin\source\repos\RESTApi\DBAccess\obj\Debug\DBAccess.csproj.CoreCompi
 C:\Users\admin\source\repos\RESTApi\DBAccess\obj\Debug\DBAccess.csproj.CopyComplete
 C:\Users\admin\source\repos\RESTApi\DBAccess\obj\Debug\DBAccess.dll
 C:\Users\admin\source\repos\RESTApi\DBAccess\obj\Debug\DBAccess.pdb
+C:\Users\admin\source\repos\RESTApi\DBAccess\bin\Debug\Newtonsoft.Json.dll
+C:\Users\admin\source\repos\RESTApi\DBAccess\bin\Debug\Newtonsoft.Json.pdb
+C:\Users\admin\source\repos\RESTApi\DBAccess\bin\Debug\Newtonsoft.Json.xml
+C:\Users\admin\source\repos\RESTApi\DBAccess\bin\Debug\ru\EntityFramework.SqlServer.resources.dll

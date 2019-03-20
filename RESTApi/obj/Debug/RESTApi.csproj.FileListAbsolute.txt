@@ -102,3 +102,5 @@ C:\Users\admin\source\repos\RESTApi\RESTApi\obj\Debug\RESTApi.csproj.CoreCompile
 C:\Users\admin\source\repos\RESTApi\RESTApi\obj\Debug\RESTApi.csproj.CopyComplete
 C:\Users\admin\source\repos\RESTApi\RESTApi\obj\Debug\RESTApi.dll
 C:\Users\admin\source\repos\RESTApi\RESTApi\obj\Debug\RESTApi.pdb
+C:\Users\admin\source\repos\RESTApi\RESTApi\bin\Newtonsoft.Json.pdb
+C:\Users\admin\source\repos\RESTApi\RESTApi\bin\ru\EntityFramework.SqlServer.resources.dll
