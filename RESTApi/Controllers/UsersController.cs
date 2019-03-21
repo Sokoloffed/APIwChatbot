@@ -31,30 +31,17 @@ namespace RESTApi.Controllers
         }
 
         [System.Web.Http.HttpGet]
-        public Users Get(int ID)
+        public IEnumerable<UsersModel> Get(int ID)
         {
-            using (TaskManagerDBEntities entities = new TaskManagerDBEntities())
-            {
-                entities.Configuration.LazyLoadingEnabled = false;
-                Users user = new Users();
-                Users mock = new Users();
-                mock = entities.Users.FirstOrDefault(i => i.id == ID);
-                user.id = mock.id;
-                user.username = mock.username;
-                user.password = mock.password;
-                return user;
-            }
+            DataRepository repository = new DataRepository();
+            return repository.GetUserViaID(ID).ToList().Select(c => modelFactory.Create(c));
         }
 
         [System.Web.Http.HttpGet]
-        public Users Get(string name)
+        public IEnumerable<UsersModel> Get(string name)
         {
-            
-            using (TaskManagerDBEntities entities = new TaskManagerDBEntities())
-            {
-                
-                return entities.Users.FirstOrDefault(i => i.username.Equals(name));
-            }
+            DataRepository repository = new DataRepository();
+            return repository.GetUserViaName(name).ToList().Select(c => modelFactory.Create(c));
         }
 
         [Route("api/Users/GetList/{name}")]
