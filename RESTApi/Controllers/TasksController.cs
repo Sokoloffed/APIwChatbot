@@ -26,6 +26,7 @@ namespace RESTApi.Controllers
             return repository.GetAllTasks().ToList().Select(c => modelFactory.Create(c));
         }
 
+        [HttpGet]
         public IEnumerable<TasksModel> Get(int id)
         {
             DataRepository repository = new DataRepository();
