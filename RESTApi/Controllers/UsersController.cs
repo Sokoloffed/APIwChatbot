@@ -38,10 +38,27 @@ namespace RESTApi.Controllers
         }
 
         [System.Web.Http.HttpGet]
-        public IEnumerable<UsersModel> Get(string name)
+        public IEnumerable<UsersModel> Get(string username, string password)
         {
-            DataRepository repository = new DataRepository();
-            return repository.GetUserViaName(name).ToList().Select(c => modelFactory.Create(c));
+            using (TaskManagerDBEntities ctx = new TaskManagerDBEntities())
+            {
+                return ctx.Users.Where(i => i.username.Equals(username)).Where(i => i.password.Equals(password)).ToList().Select(c => modelFactory.Create(c));
+            }
+        }
+
+        [System.Web.Http.HttpPost]
+        public bool Post(Users user)
+        {
+            using (TaskManagerDBEntities entities = new TaskManagerDBEntities())
+            {
+                if(entities.Users.Where(t => t.id == user.id).FirstOrDefault() != null)
+                {
+                    return false;
+                }
+                entities.Users.Add(user);
+                entities.SaveChanges();
+                return true;
+            }
         }
 
         
