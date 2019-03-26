@@ -38,11 +38,11 @@ namespace RESTApi.Controllers
         }
 
         [System.Web.Http.HttpGet]
-        public IEnumerable<UsersModel> Get(string username, string password)
+        public UsersModel Get(string username, string password)
         {
             using (TaskManagerDBEntities ctx = new TaskManagerDBEntities())
             {
-                return ctx.Users.Where(i => i.username.Equals(username)).Where(i => i.password.Equals(password)).ToList().Select(c => modelFactory.Create(c));
+                return modelFactory.Create(ctx.Users.Where(i => i.username.Equals(username)).Where(i => i.password.Equals(password)).FirstOrDefault());
             }
         }
 
