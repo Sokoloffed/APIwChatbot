@@ -47,17 +47,57 @@ namespace RESTApi.Controllers
         }
 
         [System.Web.Http.HttpPost]
+        [AcceptVerbs("GET","POST")]
         public bool Post(Users user)
         {
             using (TaskManagerDBEntities entities = new TaskManagerDBEntities())
             {
-                if(entities.Users.Where(t => t.id == user.id).FirstOrDefault() != null)
+                if (entities.Users.Where(t => t.username.Equals(user.username)).Where(t => t.password.Equals(user.password)).FirstOrDefault() != null)
                 {
                     return false;
                 }
-                entities.Users.Add(user);
+                entities.Users.Add(new Users {username=user.username,password=user.password });
                 entities.SaveChanges();
                 return true;
+            }
+        }
+
+        [HttpDelete]
+        public bool Delete(int id)
+        {
+            using (TaskManagerDBEntities entities = new TaskManagerDBEntities())
+            {
+                if((entities.UserBranch.Where(u=> u.user_id == id).FirstOrDefault() != null) || (entities.UserTask.Where(u => u.user_id == id).FirstOrDefault() != null)){
+                    return false;
+                }
+                Users user = entities.Users.Where(u => u.id == id).FirstOrDefault();
+                if (user != null)
+                {
+                    entities.Users.Remove(user);
+                    entities.SaveChanges();
+                    return true;
+                }
+                else return false;
+                
+            }
+        }
+        
+        [HttpDelete]
+        public bool Delete(Users userDel)
+        {
+            using (TaskManagerDBEntities entities = new TaskManagerDBEntities())
+            {
+
+                if ((entities.UserBranch.Where(u => u.user_id == userDel.id).FirstOrDefault() != null) || (entities.UserTask.Where(u => u.user_id == userDel.id).FirstOrDefault() != null)){
+                    return false;
+                }
+                if (userDel != null)
+                {
+                    entities.Users.Remove(userDel);
+                    entities.SaveChanges();
+                    return true;
+                }
+                else return false;
             }
         }
 
