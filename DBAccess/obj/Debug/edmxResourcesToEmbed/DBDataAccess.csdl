@@ -4,29 +4,29 @@
     <Key>
       <PropertyRef Name="id" />
     </Key>
-    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="branchname" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="creator_id" Type="Int32" Nullable="false" />
     <Property Name="created_date" Type="DateTime" Nullable="false" Precision="3" />
-    <NavigationProperty Name="TaskBranch" Relationship="Self.Branch_TaskBranch" FromRole="Branches" ToRole="TaskBranch" />
-    <NavigationProperty Name="UserBranch" Relationship="Self.Branch_UserBranch" FromRole="Branches" ToRole="UserBranch" />
+    <NavigationProperty Name="TaskBranch" Relationship="Self.FK_TaskBranch_Branches" FromRole="Branches" ToRole="TaskBranch" />
+    <NavigationProperty Name="UserBranch" Relationship="Self.FK_UserBranch_Branches" FromRole="Branches" ToRole="UserBranch" />
   </EntityType>
   <EntityType Name="TaskBranch">
     <Key>
       <PropertyRef Name="id" />
     </Key>
-    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="task_id" Type="Int32" Nullable="false" />
     <Property Name="branch_id" Type="Int32" Nullable="false" />
-    <NavigationProperty Name="Branches" Relationship="Self.Branch_TaskBranch" FromRole="TaskBranch" ToRole="Branches" />
-    <NavigationProperty Name="Tasks" Relationship="Self.Task_TaskBranch" FromRole="TaskBranch" ToRole="Tasks" />
+    <NavigationProperty Name="Branches" Relationship="Self.FK_TaskBranch_Branches" FromRole="TaskBranch" ToRole="Branches" />
+    <NavigationProperty Name="Tasks" Relationship="Self.FK_TaskBranch_Tasks" FromRole="TaskBranch" ToRole="Tasks" />
   </EntityType>
   <EntityType Name="Tasks">
     <Key>
       <PropertyRef Name="id" />
     </Key>
-    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="taskname" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="date_begin" Type="DateTime" Nullable="false" Precision="3" />
@@ -34,40 +34,40 @@
     <Property Name="status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="creator_id" Type="Int32" Nullable="false" />
     <Property Name="executor_id" Type="Int32" />
-    <NavigationProperty Name="TaskBranch" Relationship="Self.Task_TaskBranch" FromRole="Tasks" ToRole="TaskBranch" />
-    <NavigationProperty Name="UserTask" Relationship="Self.Task_UserTask" FromRole="Tasks" ToRole="UserTask" />
+    <NavigationProperty Name="TaskBranch" Relationship="Self.FK_TaskBranch_Tasks" FromRole="Tasks" ToRole="TaskBranch" />
+    <NavigationProperty Name="UserTask" Relationship="Self.FK_UserTask_Tasks" FromRole="Tasks" ToRole="UserTask" />
   </EntityType>
   <EntityType Name="UserBranch">
     <Key>
       <PropertyRef Name="id" />
     </Key>
-    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="user_id" Type="Int32" Nullable="false" />
     <Property Name="branch_id" Type="Int32" Nullable="false" />
-    <NavigationProperty Name="Branches" Relationship="Self.Branch_UserBranch" FromRole="UserBranch" ToRole="Branches" />
-    <NavigationProperty Name="Users" Relationship="Self.User_UserBranch" FromRole="UserBranch" ToRole="Users" />
+    <NavigationProperty Name="Branches" Relationship="Self.FK_UserBranch_Branches" FromRole="UserBranch" ToRole="Branches" />
+    <NavigationProperty Name="Users" Relationship="Self.FK_UserBranch_Users" FromRole="UserBranch" ToRole="Users" />
   </EntityType>
   <EntityType Name="Users">
     <Key>
       <PropertyRef Name="id" />
     </Key>
-    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-    <NavigationProperty Name="UserBranch" Relationship="Self.User_UserBranch" FromRole="Users" ToRole="UserBranch" />
-    <NavigationProperty Name="UserTask" Relationship="Self.User_UserTask" FromRole="Users" ToRole="UserTask" />
+    <NavigationProperty Name="UserBranch" Relationship="Self.FK_UserBranch_Users" FromRole="Users" ToRole="UserBranch" />
+    <NavigationProperty Name="UserTask" Relationship="Self.FK_UserTask_Users" FromRole="Users" ToRole="UserTask" />
   </EntityType>
   <EntityType Name="UserTask">
     <Key>
       <PropertyRef Name="id" />
     </Key>
-    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="user_id" Type="Int32" Nullable="false" />
     <Property Name="task_id" Type="Int32" Nullable="false" />
-    <NavigationProperty Name="Tasks" Relationship="Self.Task_UserTask" FromRole="UserTask" ToRole="Tasks" />
-    <NavigationProperty Name="Users" Relationship="Self.User_UserTask" FromRole="UserTask" ToRole="Users" />
+    <NavigationProperty Name="Tasks" Relationship="Self.FK_UserTask_Tasks" FromRole="UserTask" ToRole="Tasks" />
+    <NavigationProperty Name="Users" Relationship="Self.FK_UserTask_Users" FromRole="UserTask" ToRole="Users" />
   </EntityType>
-  <Association Name="Branch_TaskBranch">
+  <Association Name="FK_TaskBranch_Branches">
     <End Role="Branches" Type="Self.Branches" Multiplicity="1" />
     <End Role="TaskBranch" Type="Self.TaskBranch" Multiplicity="*" />
     <ReferentialConstraint>
@@ -79,7 +79,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="Branch_UserBranch">
+  <Association Name="FK_UserBranch_Branches">
     <End Role="Branches" Type="Self.Branches" Multiplicity="1" />
     <End Role="UserBranch" Type="Self.UserBranch" Multiplicity="*" />
     <ReferentialConstraint>
@@ -91,7 +91,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="Task_TaskBranch">
+  <Association Name="FK_TaskBranch_Tasks">
     <End Role="Tasks" Type="Self.Tasks" Multiplicity="1" />
     <End Role="TaskBranch" Type="Self.TaskBranch" Multiplicity="*" />
     <ReferentialConstraint>
@@ -103,7 +103,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="Task_UserTask">
+  <Association Name="FK_UserTask_Tasks">
     <End Role="Tasks" Type="Self.Tasks" Multiplicity="1" />
     <End Role="UserTask" Type="Self.UserTask" Multiplicity="*" />
     <ReferentialConstraint>
@@ -115,7 +115,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="User_UserBranch">
+  <Association Name="FK_UserBranch_Users">
     <End Role="Users" Type="Self.Users" Multiplicity="1" />
     <End Role="UserBranch" Type="Self.UserBranch" Multiplicity="*" />
     <ReferentialConstraint>
@@ -127,7 +127,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="User_UserTask">
+  <Association Name="FK_UserTask_Users">
     <End Role="Users" Type="Self.Users" Multiplicity="1" />
     <End Role="UserTask" Type="Self.UserTask" Multiplicity="*" />
     <ReferentialConstraint>
@@ -146,27 +146,27 @@
     <EntitySet Name="UserBranch" EntityType="Self.UserBranch" />
     <EntitySet Name="Users" EntityType="Self.Users" />
     <EntitySet Name="UserTask" EntityType="Self.UserTask" />
-    <AssociationSet Name="Branch_TaskBranch" Association="Self.Branch_TaskBranch">
+    <AssociationSet Name="FK_TaskBranch_Branches" Association="Self.FK_TaskBranch_Branches">
       <End Role="Branches" EntitySet="Branches" />
       <End Role="TaskBranch" EntitySet="TaskBranch" />
     </AssociationSet>
-    <AssociationSet Name="Branch_UserBranch" Association="Self.Branch_UserBranch">
+    <AssociationSet Name="FK_UserBranch_Branches" Association="Self.FK_UserBranch_Branches">
       <End Role="Branches" EntitySet="Branches" />
       <End Role="UserBranch" EntitySet="UserBranch" />
     </AssociationSet>
-    <AssociationSet Name="Task_TaskBranch" Association="Self.Task_TaskBranch">
+    <AssociationSet Name="FK_TaskBranch_Tasks" Association="Self.FK_TaskBranch_Tasks">
       <End Role="Tasks" EntitySet="Tasks" />
       <End Role="TaskBranch" EntitySet="TaskBranch" />
     </AssociationSet>
-    <AssociationSet Name="Task_UserTask" Association="Self.Task_UserTask">
+    <AssociationSet Name="FK_UserTask_Tasks" Association="Self.FK_UserTask_Tasks">
       <End Role="Tasks" EntitySet="Tasks" />
       <End Role="UserTask" EntitySet="UserTask" />
     </AssociationSet>
-    <AssociationSet Name="User_UserBranch" Association="Self.User_UserBranch">
+    <AssociationSet Name="FK_UserBranch_Users" Association="Self.FK_UserBranch_Users">
       <End Role="Users" EntitySet="Users" />
       <End Role="UserBranch" EntitySet="UserBranch" />
     </AssociationSet>
-    <AssociationSet Name="User_UserTask" Association="Self.User_UserTask">
+    <AssociationSet Name="FK_UserTask_Users" Association="Self.FK_UserTask_Users">
       <End Role="Users" EntitySet="Users" />
       <End Role="UserTask" EntitySet="UserTask" />
     </AssociationSet>

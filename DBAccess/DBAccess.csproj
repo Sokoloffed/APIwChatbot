@@ -90,32 +90,30 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.Config" />
     <EntityDeploy Include="DBDataAccess.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>DBDataAccess.Designer.cs</LastGenOutput>
     </EntityDeploy>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.Config" />
     <None Include="DBDataAccess.edmx.diagram">
       <DependentUpon>DBDataAccess.edmx</DependentUpon>
     </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="DBDataAccess.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>DBDataAccess.Context.cs</LastGenOutput>
       <DependentUpon>DBDataAccess.edmx</DependentUpon>
+      <LastGenOutput>DBDataAccess.Context.cs</LastGenOutput>
     </Content>
     <Content Include="DBDataAccess.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>DBDataAccess.edmx</DependentUpon>
       <LastGenOutput>DBDataAccess.cs</LastGenOutput>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

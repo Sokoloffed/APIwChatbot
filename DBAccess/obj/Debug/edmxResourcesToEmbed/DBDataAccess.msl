@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-  <EntityContainerMapping StorageEntityContainer="Хранилище TaskManagerDBModelContainer" CdmEntityContainer="TaskManagerDBEntities">
+  <EntityContainerMapping StorageEntityContainer="TaskManagerDBModelStoreContainer" CdmEntityContainer="TaskManagerDBEntities">
     <EntitySetMapping Name="Branches">
       <EntityTypeMapping TypeName="TaskManagerDBModel.Branches">
         <MappingFragment StoreEntitySet="Branches">

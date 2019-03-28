@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Schema Namespace="Хранилище TaskManagerDBModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+<Schema Namespace="TaskManagerDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
   <EntityType Name="Branches">
     <Key>
       <PropertyRef Name="id" />
     </Key>
-    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="branchname" Type="nvarchar" MaxLength="50" Nullable="false" />
     <Property Name="description" Type="nvarchar" MaxLength="50" Nullable="false" />
     <Property Name="creator_id" Type="int" Nullable="false" />
@@ -14,7 +14,7 @@
     <Key>
       <PropertyRef Name="id" />
     </Key>
-    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="task_id" Type="int" Nullable="false" />
     <Property Name="branch_id" Type="int" Nullable="false" />
   </EntityType>
@@ -22,7 +22,7 @@
     <Key>
       <PropertyRef Name="id" />
     </Key>
-    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="taskname" Type="nvarchar" MaxLength="50" Nullable="false" />
     <Property Name="description" Type="nvarchar(max)" Nullable="false" />
     <Property Name="date_begin" Type="datetime" Nullable="false" />
@@ -35,7 +35,7 @@
     <Key>
       <PropertyRef Name="id" />
     </Key>
-    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="user_id" Type="int" Nullable="false" />
     <Property Name="branch_id" Type="int" Nullable="false" />
   </EntityType>
@@ -43,7 +43,7 @@
     <Key>
       <PropertyRef Name="id" />
     </Key>
-    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="username" Type="nvarchar" MaxLength="50" Nullable="false" />
     <Property Name="password" Type="nvarchar" MaxLength="50" Nullable="false" />
   </EntityType>
@@ -51,11 +51,11 @@
     <Key>
       <PropertyRef Name="id" />
     </Key>
-    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="user_id" Type="int" Nullable="false" />
     <Property Name="task_id" Type="int" Nullable="false" />
   </EntityType>
-  <Association Name="Branch-TaskBranch">
+  <Association Name="FK_TaskBranch_Branches">
     <End Role="Branches" Type="Self.Branches" Multiplicity="1" />
     <End Role="TaskBranch" Type="Self.TaskBranch" Multiplicity="*" />
     <ReferentialConstraint>
@@ -67,19 +67,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="Branch-UserBranch">
-    <End Role="Branches" Type="Self.Branches" Multiplicity="1" />
-    <End Role="UserBranch" Type="Self.UserBranch" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Branches">
-        <PropertyRef Name="id" />
-      </Principal>
-      <Dependent Role="UserBranch">
-        <PropertyRef Name="branch_id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="Task-TaskBranch">
+  <Association Name="FK_TaskBranch_Tasks">
     <End Role="Tasks" Type="Self.Tasks" Multiplicity="1" />
     <End Role="TaskBranch" Type="Self.TaskBranch" Multiplicity="*" />
     <ReferentialConstraint>
@@ -91,19 +79,19 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="Task-UserTask">
-    <End Role="Tasks" Type="Self.Tasks" Multiplicity="1" />
-    <End Role="UserTask" Type="Self.UserTask" Multiplicity="*" />
+  <Association Name="FK_UserBranch_Branches">
+    <End Role="Branches" Type="Self.Branches" Multiplicity="1" />
+    <End Role="UserBranch" Type="Self.UserBranch" Multiplicity="*" />
     <ReferentialConstraint>
-      <Principal Role="Tasks">
+      <Principal Role="Branches">
         <PropertyRef Name="id" />
       </Principal>
-      <Dependent Role="UserTask">
-        <PropertyRef Name="task_id" />
+      <Dependent Role="UserBranch">
+        <PropertyRef Name="branch_id" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="User-UserBranch">
+  <Association Name="FK_UserBranch_Users">
     <End Role="Users" Type="Self.Users" Multiplicity="1" />
     <End Role="UserBranch" Type="Self.UserBranch" Multiplicity="*" />
     <ReferentialConstraint>
@@ -115,7 +103,19 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="User-UserTask">
+  <Association Name="FK_UserTask_Tasks">
+    <End Role="Tasks" Type="Self.Tasks" Multiplicity="1" />
+    <End Role="UserTask" Type="Self.UserTask" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Tasks">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="UserTask">
+        <PropertyRef Name="task_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserTask_Users">
     <End Role="Users" Type="Self.Users" Multiplicity="1" />
     <End Role="UserTask" Type="Self.UserTask" Multiplicity="*" />
     <ReferentialConstraint>
@@ -127,34 +127,34 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <EntityContainer Name="Хранилище TaskManagerDBModelContainer">
+  <EntityContainer Name="TaskManagerDBModelStoreContainer">
     <EntitySet Name="Branches" EntityType="Self.Branches" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="TaskBranch" EntityType="Self.TaskBranch" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Tasks" EntityType="Self.Tasks" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="UserBranch" EntityType="Self.UserBranch" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="UserTask" EntityType="Self.UserTask" Schema="dbo" store:Type="Tables" />
-    <AssociationSet Name="Branch-TaskBranch" Association="Self.Branch-TaskBranch">
+    <AssociationSet Name="FK_TaskBranch_Branches" Association="Self.FK_TaskBranch_Branches">
       <End Role="Branches" EntitySet="Branches" />
       <End Role="TaskBranch" EntitySet="TaskBranch" />
     </AssociationSet>
-    <AssociationSet Name="Branch-UserBranch" Association="Self.Branch-UserBranch">
+    <AssociationSet Name="FK_TaskBranch_Tasks" Association="Self.FK_TaskBranch_Tasks">
+      <End Role="Tasks" EntitySet="Tasks" />
+      <End Role="TaskBranch" EntitySet="TaskBranch" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserBranch_Branches" Association="Self.FK_UserBranch_Branches">
       <End Role="Branches" EntitySet="Branches" />
       <End Role="UserBranch" EntitySet="UserBranch" />
     </AssociationSet>
-    <AssociationSet Name="Task-TaskBranch" Association="Self.Task-TaskBranch">
-      <End Role="Tasks" EntitySet="Tasks" />
-      <End Role="TaskBranch" EntitySet="TaskBranch" />
-    </AssociationSet>
-    <AssociationSet Name="Task-UserTask" Association="Self.Task-UserTask">
-      <End Role="Tasks" EntitySet="Tasks" />
-      <End Role="UserTask" EntitySet="UserTask" />
-    </AssociationSet>
-    <AssociationSet Name="User-UserBranch" Association="Self.User-UserBranch">
+    <AssociationSet Name="FK_UserBranch_Users" Association="Self.FK_UserBranch_Users">
       <End Role="Users" EntitySet="Users" />
       <End Role="UserBranch" EntitySet="UserBranch" />
     </AssociationSet>
-    <AssociationSet Name="User-UserTask" Association="Self.User-UserTask">
+    <AssociationSet Name="FK_UserTask_Tasks" Association="Self.FK_UserTask_Tasks">
+      <End Role="Tasks" EntitySet="Tasks" />
+      <End Role="UserTask" EntitySet="UserTask" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserTask_Users" Association="Self.FK_UserTask_Users">
       <End Role="Users" EntitySet="Users" />
       <End Role="UserTask" EntitySet="UserTask" />
     </AssociationSet>
