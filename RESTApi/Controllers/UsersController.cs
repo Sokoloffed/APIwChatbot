@@ -46,6 +46,9 @@ namespace RESTApi.Controllers
             }
         }
 
+        //[HttpPut]
+        //public bool Put()
+
         [System.Web.Http.HttpPost]
         [AcceptVerbs("GET","POST")]
         public bool Post(Users user)
@@ -98,25 +101,6 @@ namespace RESTApi.Controllers
                     return true;
                 }
                 else return false;
-            }
-        }
-
-        
-        [Route("api/Users/CreateUser")]
-        [AcceptVerbs("GET", "POST")]
-        [HttpPost]
-        public string CreateUser(Users user)
-        {
-            using (TaskManagerDBEntities entities = new TaskManagerDBEntities())
-            {
-
-                if (entities.Users.Where(t => (t.id == user.id)).FirstOrDefault() != null)
-                {
-                    return "Attempt to add the existing user.";
-                }
-                entities.Users.Add(user);
-                entities.SaveChanges();
-                return "Success!";
             }
         }
     }
