@@ -96,6 +96,58 @@ namespace RESTApi.Controllers
             }
         }
 
+        [Route("api/Tasks/setTU")]
+        [AcceptVerbs("GET", "POST")]
+        [HttpGet]
+        public bool SetTU(int t_id, int u_id)
+        {
+            using (TaskManagerDBEntities entities = new TaskManagerDBEntities())
+            {
+                try
+                {
+                    if(entities.UserTask.Where(i => i.task_id == t_id).Where(t => t.user_id == u_id).FirstOrDefault() != null)
+                    {
+                        return false;
+                    }
+                    entities.UserTask.Add(new UserTask { task_id = t_id, user_id = u_id });
+                    entities.SaveChanges();
+                    return true;
+                }
+                catch(Exception ex)
+                {
+                    return false;
+                }
+                
+            }
+        }
+
+        [Route("api/Tasks/setTB")]
+        [AcceptVerbs("GET", "POST")]
+        [HttpGet]
+        public bool SetTB(int t_id, int b_id)
+        {
+            using (TaskManagerDBEntities entities = new TaskManagerDBEntities())
+            {
+                try
+                {
+                    if(entities.TaskBranch.Where(i => i.task_id == t_id).Where(i => i.branch_id == b_id).FirstOrDefault() != null)
+                    {
+                        return false;
+                    }
+                    entities.TaskBranch.Add(new TaskBranch { task_id = t_id, branch_id = b_id });
+                    entities.SaveChanges();
+                    return true;
+
+                }
+                catch (Exception ex)
+                {
+                    return false;
+                }
+
+            }
+        }
+
+
         [HttpPost]
         public bool Post(Tasks task)
         {
