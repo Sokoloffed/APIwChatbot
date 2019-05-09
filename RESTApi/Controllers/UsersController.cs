@@ -31,10 +31,12 @@ namespace RESTApi.Controllers
         }
 
         [System.Web.Http.HttpGet]
-        public IEnumerable<UsersModel> Get(int ID)
+        public UsersModel Get(int ID)
         {
-            DataRepository repository = new DataRepository();
-            return repository.GetUserViaID(ID).ToList().Select(c => modelFactory.Create(c));
+            using (TaskManagerDBEntities entities = new TaskManagerDBEntities())
+            {
+                return modelFactory.Create(entities.Users.Where(i => i.id == ID).FirstOrDefault());
+            }
         }
 
         [System.Web.Http.HttpGet]
@@ -66,6 +68,7 @@ namespace RESTApi.Controllers
         }
 
         [HttpDelete]
+        [AcceptVerbs("GET", "POST", "DELETE")]
         public bool Delete(int id)
         {
             using (TaskManagerDBEntities entities = new TaskManagerDBEntities())
