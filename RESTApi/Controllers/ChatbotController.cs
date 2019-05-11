@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using Newtonsoft.Json;
 using System.Web.Helpers;
+using System.Text.RegularExpressions;
 
 namespace RESTApi.Controllers
 {
@@ -66,15 +67,171 @@ namespace RESTApi.Controllers
             {
 
             }
+            #region Message
             else if (update.@event == "message")
             {
-                if (update.message.text == "HELP")
+                if (Logic.isFilter && Logic.isFilterParameter)
                 {
+                    if (update.message.text == "Back")
+                    {
+                        if (Logic.isGetUsers)
+                        {
+                            Logic.isGetUsers = false;
+                        }
+                        else if (Logic.isGetBranches)
+                        {
+                            Logic.isGetBranches = false;
+                        }
+                        else if (Logic.isGetTasks)
+                        {
+                            Logic.isGetTasks = false;
+                        }
+                        Logic.isFilterParameter = false;
+                        return "";
+                    }
+                    else
+                    {
+                        Regex rxUID = new Regex(@"ID\s\.+");
+                        Regex rxUs = new Regex(@"Username\s\.+");
+                        Regex rxBN = new Regex(@"Branchname\s\.+");
+                        Regex rxCA = new Regex(@"CreatedAt\s\.+");
+                        Regex rxCID = new Regex(@"CreatorID\s\.+");
+                        using (TaskManagerDBEntities entities = new TaskManagerDBEntities())
+                        {
+                            Match m1 = rxUID.Match(update.message.text);
+                            Match m2 = rxUs.Match(update.message.text);
+                            Match m3 = rxBN.Match(update.message.text);
+                            Match m4 = rxCA.Match(update.message.text);
+                            Match m5 = rxCID.Match(update.message.text);
+                            DataRepository data = new DataRepository();
+                            string text = update.message.text.Replace(" ", String.Empty);
+                            if (m1.Success)
+                            {
+                                string param = text.Substring(2, text.Length - 2);
+                                int ID = Convert.ToInt32(param);
+                                string message = ConvertUsers(modelFactory.Create(entities.Users.Where(i => i.id == ID).FirstOrDefault()));
+                                SendMessage(update.sender.id, message);
+                            }
+                            else if (m2.Success)
+                            {
+                                string param = text.Substring(8, text.Length - 8);
+                                string message = ConvertUsers(modelFactory.Create(entities.Users.Where(i => i.username == param).FirstOrDefault()));
+                                SendMessage(update.sender.id, message);
+                            }
+                            else if (m3.Success)
+                            {
+                                string param = text.Substring(10, text.Length - 10);
+                                string message = ConvertBranches(modelFactory.Create(entities.Branches.Where(i => i.branchname == param).FirstOrDefault()));
+                                SendMessage(update.sender.id, message);
+                            }
+                            else if (m4.Success)
+                            {
+                                string param = text.Substring(9, text.Length - 9);
+                                string message = ConvertBranches(data.GetBranchesViaBeginTime(Convert.ToDateTime(param)).ToList().Select(c => modelFactory.Create(c));
+                                SendMessage(update.sender.id, message);
+                            }
+                            else if (m5.Success)
+                            {
+                                string param = text.Substring(9, text.Length - 9);
+                                int ID = Convert.ToInt32(param);
+                                string message = ConvertBranches(modelFactory.Create(entities.Branches.Where(i => i.creator_id == ID).FirstOrDefault()));
+                                SendMessage(update.sender.id, message);
+                            }
 
-                    string help = "Print GET ALL USERS to get info about all users, " + "\\n"
-                        + "Print GET ALL BRANCHES to get info about all branches, " + "\\n"
-                        + "Print GET ALL TASKS to get info about all tasks " + "\n";
-                    SendMessage(update.sender.id, help);
+                        }
+                        SendMessage(update.sender.id, "Print Back to return");
+                        return "";
+                    }
+                    
+                   
+                }
+
+                else if((Logic.isGetUsers || Logic.isGetBranches || Logic.isGetTasks) && Logic.isFilter)
+                {
+                    string s = "";
+                    string tmp = "";
+                    if (Logic.isGetUsers)
+                    {
+                        s = "Users";
+                        tmp = "ID, Username";
+                    }
+                    else if (Logic.isGetBranches)
+                    {
+                        s = "Branches";
+                        tmp = "Branchname, CreatedAt, CreatorID";
+                    }
+                    else if (Logic.isGetTasks)
+                    {
+                        s = "Tasks";
+                        tmp = "CreatorID, CreatedAt, FinishAt, Description, Status, ExecutorID";
+                    }
+                    Logic.isFilterParameter = true;
+                    SendMessage(update.sender.id, "Possible parameters for filtering are: " + tmp + "\\n" 
+                        + "Print Back to return, or enter the name of parameter, " + "\\n" 
+                        + "Print name and parameter and value (w whitespace) to search");
+
+                    
+
+                }
+
+                else if (Logic.isGet && Logic.isGetTasks)
+                {
+                    if (update.message.text == "All")
+                    {
+                        DataRepository repository = new DataRepository();
+                        var data = repository.GetAllTasks().ToList().Select(c => modelFactory.Create(c));
+                        //sb.Append(data.ElementAt(0).username);
+                        //JsonConvert.SerializeObject(new { sb = sb });
+                        string message = ConvertTasks(data);
+                        SendMessage(update.sender.id, message);
+                        return "";
+                    }
+                    else if (update.message.text == "Filter")
+                    {
+                        SendMessage(update.sender.id, "Temporary unavaliable");
+                        return "";
+                    }
+                    else if (update.message.text == "Back")
+                    {
+                        Logic.isGetTasks = false;
+                        SendMessage(update.sender.id, "Please, print what kind of data do you want to work with: Users, Branches, Tasks ");
+                        return "";
+                    }
+                    else
+                    {
+                        SendMessage(update.sender.id, "Print All to get all data from Branches table, print Filter to start filtering, print Back to return ");
+                        return "";
+                    }
+                }
+
+                else if (Logic.isGet && Logic.isGetBranches)
+                {
+                    if (update.message.text == "All")
+                    {
+                        DataRepository repository = new DataRepository();
+                        var data = repository.GetAllBranches().ToList().Select(c => modelFactory.Create(c));
+                        //sb.Append(data.ElementAt(0).username);
+                        //JsonConvert.SerializeObject(new { sb = sb });
+                        string message = ConvertBranches(data);
+                        SendMessage(update.sender.id, message);
+                        return "";
+                    }
+                    else if (update.message.text == "Filter")
+                    {
+                        SendMessage(update.sender.id, "Temporary unavaliable");
+                        return "";
+                    }
+                    else if (update.message.text == "Back")
+                    {
+                        Logic.isGetBranches = false;
+                        SendMessage(update.sender.id, "Please, print what kind of data do you want to work with: Users, Branches, Tasks ");
+                        return "";
+                    }
+                    else
+                    {
+                        SendMessage(update.sender.id, "Print All to get all data from Branches table, print Filter to start filtering, print Back to return ");
+                        return "";
+                    }
                 }
 
                 else if (Logic.isGet && Logic.isGetUsers)
@@ -154,45 +311,11 @@ namespace RESTApi.Controllers
                         + "if you need help, print Help; ");
                     return "";
                 }
-
-                
-
-
-
-
-
-                else if (update.message.text == "GET ALL USERS")
-                {
-                    using (TaskManagerDBEntities ctx = new TaskManagerDBEntities())
-                    {
-                        DataRepository repository = new DataRepository();
-                        var data = repository.GetAllUsers().ToList().Select(c => modelFactory.Create(c));
-                        //sb.Append(data.ElementAt(0).username);
-                        //JsonConvert.SerializeObject(new { sb = sb });
-                        string message = ConvertUsers(data);
-                        SendMessage(update.sender.id, message);
-                    }
-                }
-                else if (update.message.text == "GET ALL BRANCHES")
-                {
-                    DataRepository repository = new DataRepository();
-                    var data = repository.GetAllBranches().ToList().Select(c => modelFactory.Create(c));
-                    string message = ConvertBranches(data);
-                    SendMessage(update.sender.id, message);
-
-                }
-
-                else if (update.message.text == "GET ALL TASKS")
-                {
-                    DataRepository repository = new DataRepository();
-                    var data = repository.GetAllTasks().ToList().Select(c => modelFactory.Create(c));
-                    string message = ConvertTasks(data);
-                    SendMessage(update.sender.id, message);
-                }
                 else return "";
                 
                 //else SendMessage(update.sender.id, "Wrong command, please, print HELP to get info about posible actions. ");
             }
+            #endregion Message
             else
             {
 
@@ -265,6 +388,11 @@ namespace RESTApi.Controllers
             return sb.ToString();
         }
 
+        public string ConvertUsers(UsersModel data)
+        {
+            return $"ID is: " + data.id + "Username is: " + data.username + "\\n";
+        }
+
         public string ConvertBranches(IEnumerable<BranchesModel> data)
         {
             StringBuilder sb = new StringBuilder();
@@ -274,6 +402,12 @@ namespace RESTApi.Controllers
                     + m.created_date + ", ID of creator: " + m.creator_id + "\\n");
             }
             return sb.ToString();
+        }
+
+        public string ConvertBranches(BranchesModel data)
+        {
+            return "Branchname is: " + data.branchname + ", ID is: " + data.id + ", description is: " + data.description + ", created at"
+                    + data.created_date + ", ID of creator: " + data.creator_id + "\\n"
         }
 
         public string ConvertTasks(IEnumerable<TasksModel> data)
@@ -286,6 +420,13 @@ namespace RESTApi.Controllers
             }
             return sb.ToString();
         }
+
+        public string ConvertTasks(TasksModel data)
+        {
+            return "Taskname is: " + data.taskname + " ,ID is: " + data.id + " , description is: " + data.description + " , status is: " +data.status
+                    + ", created at: " + data.date_begin + " , deadline at: " + data.date_end + "\\n"
+        }
+
     }
 
     public static class Logic
@@ -298,6 +439,8 @@ namespace RESTApi.Controllers
         public static bool isGetChoosing { get; set; }
 
         public static bool isGet { get; set; }
+        public static bool isFilter { get; set; }
+        public static bool isFilterParameter { get; set; }
 
 
         public static bool isPostUsers { get; set; }
