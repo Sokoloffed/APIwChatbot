@@ -41,7 +41,7 @@ namespace RESTApi.Controllers
 
             if (update.@event == "webhook")
             {
-
+                //SendMessage(update.sender.id, "Hello, newcomer!");
             }
             else if (update.@event == "conversation_started")
             {
@@ -68,13 +68,15 @@ namespace RESTApi.Controllers
 
             }
             #region Message
-            else if (update.@event == "message")
+            else 
+            if (update.@event == "message")
             {
                 if (Logic.isFilter && Logic.isFilterParameter)
                 {
+
                     if (update.message.text == "Back")
                     {
-                        if (Logic.isGetUsers)
+                        /*if (Logic.isGetUsers)
                         {
                             Logic.isGetUsers = false;
                         }
@@ -85,17 +87,18 @@ namespace RESTApi.Controllers
                         else if (Logic.isGetTasks)
                         {
                             Logic.isGetTasks = false;
-                        }
+                        }*/
+                        Logic.isFilter = false;
                         Logic.isFilterParameter = false;
                         return "";
                     }
                     else
                     {
-                        Regex rxUID = new Regex(@"ID\s\.+");
-                        Regex rxUs = new Regex(@"Username\s\.+");
-                        Regex rxBN = new Regex(@"Branchname\s\.+");
-                        Regex rxCA = new Regex(@"CreatedAt\s\.+");
-                        Regex rxCID = new Regex(@"CreatorID\s\.+");
+                        Regex rxUID = new Regex(@"(ID)\s.*");
+                        Regex rxUs = new Regex(@"(Username)\s.*");
+                        Regex rxBN = new Regex(@"(Branchname)\s.*");
+                        Regex rxCA = new Regex(@"(CreatedAt)\s.*");
+                        Regex rxCID = new Regex(@"(CreatorId)\s.*");
                         using (TaskManagerDBEntities entities = new TaskManagerDBEntities())
                         {
                             Match m1 = rxUID.Match(update.message.text);
@@ -127,14 +130,14 @@ namespace RESTApi.Controllers
                             else if (m4.Success)
                             {
                                 string param = text.Substring(9, text.Length - 9);
-                                string message = ConvertBranches(data.GetBranchesViaBeginTime(Convert.ToDateTime(param)).ToList().Select(c => modelFactory.Create(c));
+                                string message = ConvertBranches(data.GetBranchesViaBeginTime(Convert.ToDateTime(param)).ToList().Select(c => modelFactory.Create(c)));
                                 SendMessage(update.sender.id, message);
                             }
                             else if (m5.Success)
                             {
                                 string param = text.Substring(9, text.Length - 9);
                                 int ID = Convert.ToInt32(param);
-                                string message = ConvertBranches(modelFactory.Create(entities.Branches.Where(i => i.creator_id == ID).FirstOrDefault()));
+                                string message = ConvertBranches(data.GetBranchesViaCreatorID(ID).ToList().Select(c => modelFactory.Create(c)));
                                 SendMessage(update.sender.id, message);
                             }
 
@@ -158,12 +161,12 @@ namespace RESTApi.Controllers
                     else if (Logic.isGetBranches)
                     {
                         s = "Branches";
-                        tmp = "Branchname, CreatedAt, CreatorID";
+                        tmp = "Branchname, CreatedAt, CreatorId";
                     }
                     else if (Logic.isGetTasks)
                     {
                         s = "Tasks";
-                        tmp = "CreatorID, CreatedAt, FinishAt, Description, Status, ExecutorID";
+                        tmp = "CreatorId, CreatedAt, FinishAt, Description, Status, ExecutorId";
                     }
                     Logic.isFilterParameter = true;
                     SendMessage(update.sender.id, "Possible parameters for filtering are: " + tmp + "\\n" 
@@ -188,13 +191,17 @@ namespace RESTApi.Controllers
                     }
                     else if (update.message.text == "Filter")
                     {
-                        SendMessage(update.sender.id, "Temporary unavaliable");
+                        //Logic.isFilterParameter = true;
+                        SendMessage(update.sender.id, "Oops");
                         return "";
                     }
                     else if (update.message.text == "Back")
                     {
                         Logic.isGetTasks = false;
-                        SendMessage(update.sender.id, "Please, print what kind of data do you want to work with: Users, Branches, Tasks ");
+                        Logic.isGet = false;
+                        SendMessage(update.sender.id, "If you want to get data from database, print Get + Users|Branches|Tasks; " + "\\n"
+                                                + "if you want to Post new data into database, print Post + Users|Branches|Tasks; " + "\\n"
+                                                + "if you need help, print Help; ");
                         return "";
                     }
                     else
@@ -218,13 +225,17 @@ namespace RESTApi.Controllers
                     }
                     else if (update.message.text == "Filter")
                     {
-                        SendMessage(update.sender.id, "Temporary unavaliable");
+                        Logic.isFilter = true;
+                        SendMessage(update.sender.id, "Press any key");
                         return "";
                     }
                     else if (update.message.text == "Back")
                     {
                         Logic.isGetBranches = false;
-                        SendMessage(update.sender.id, "Please, print what kind of data do you want to work with: Users, Branches, Tasks ");
+                        Logic.isGet = false;
+                        SendMessage(update.sender.id, "If you want to get data from database, print Get + Users|Branches|Tasks; " + "\\n"
+                                                + "if you want to Post new data into database, print Post + Users|Branches|Tasks; " + "\\n"
+                                                + "if you need help, print Help; ");
                         return "";
                     }
                     else
@@ -248,13 +259,17 @@ namespace RESTApi.Controllers
                     }
                     else if (update.message.text == "Filter")
                     {
-                        SendMessage(update.sender.id, "Temporary unavaliable");
+                        Logic.isFilter = true;
+                        SendMessage(update.sender.id, "Press any key");
                         return "";
                     }
                     else if (update.message.text == "Back")
                     {
                         Logic.isGetUsers = false;
-                        SendMessage(update.sender.id, "Please, print what kind of data do you want to work with: Users, Branches, Tasks ");
+                        Logic.isGet = false;
+                        SendMessage(update.sender.id, "If you want to get data from database, print Get + Users|Branches|Tasks; " + "\\n"
+                                                + "if you want to Post new data into database, print Post + Users|Branches|Tasks; " + "\\n"
+                                                + "if you need help, print Help; ");
                         return "";
                     }
                     else
@@ -265,7 +280,7 @@ namespace RESTApi.Controllers
 
                 }
 
-                else if (Logic.isGet)
+                /*else if (Logic.isGet)
                 {
                     
 
@@ -295,19 +310,49 @@ namespace RESTApi.Controllers
 
 
                     else SendMessage(update.sender.id, "Please, print what kind of data do you want to work with: Users, Branches, Tasks, or print Back to get back");
-                }
+                }*/
 
                 else if (!Logic.isGet && !Logic.isPost)
                 {
-                    if (update.message.text == "Get")
+                    Regex mGUser = new Regex(@"(Get)\s(Users)");
+                    Regex mGBranches = new Regex(@"(Get)\s(Branches)");
+                    Regex mGTasks = new Regex(@"(Get)\s(Tasks)");
+                    Regex mPUser = new Regex(@"(Post)\s(Users)");
+                    Regex mPBranches = new Regex(@"(Post)\s(Branches)");
+                    Regex mPTasks = new Regex(@"(Post)\s(Tasks)");
+
+                    Match mUg = mGUser.Match(update.message.text);
+                    Match mBg = mGBranches.Match(update.message.text);
+                    Match mTg = mGTasks.Match(update.message.text);
+                    Match mUp = mPUser.Match(update.message.text);
+                    Match mBp = mPBranches.Match(update.message.text);
+                    Match mTp = mPTasks.Match(update.message.text);
+
+                    if (mUg.Success)
+                    {
+                        Logic.isGetUsers = true;
+                    }
+                    else if (mBg.Success)
+                    {
+                        Logic.isGetBranches = true;
+                    }
+                    else if (mTg.Success)
+                    {
+                        Logic.isGetTasks = true;
+                    }
+                    if(mUg.Success || mBg.Success || mTg.Success)
                     {
                         Logic.isGet = true;
-                        SendMessage(update.sender.id, "Please, print what kind of data do you want to work with: Users, Branches, Tasks ");
+                        SendMessage(update.sender.id, "Print All to get all data from table, print Filter to start filtering, print Back to return ");
                         return "";
                     }
-
-                    else SendMessage(update.sender.id, "If you want to get data from database, print Get; " + "\\n"
-                        + "if you want to Post new data into database, print Post; " + "\\n"
+                    else if(mUp.Success || mBp.Success || mTp.Success)
+                    {
+                        Logic.isPost = true;
+                        return "";
+                    }
+                    else SendMessage(update.sender.id, "If you want to get data from database, print Get + Users|Branches|Tasks; " + "\\n"
+                        + "if you want to Post new data into database, print Post + Users|Branches|Tasks; " + "\\n"
                         + "if you need help, print Help; ");
                     return "";
                 }
@@ -407,7 +452,7 @@ namespace RESTApi.Controllers
         public string ConvertBranches(BranchesModel data)
         {
             return "Branchname is: " + data.branchname + ", ID is: " + data.id + ", description is: " + data.description + ", created at"
-                    + data.created_date + ", ID of creator: " + data.creator_id + "\\n"
+                    + data.created_date + ", ID of creator: " + data.creator_id + "\\n";
         }
 
         public string ConvertTasks(IEnumerable<TasksModel> data)
@@ -423,8 +468,8 @@ namespace RESTApi.Controllers
 
         public string ConvertTasks(TasksModel data)
         {
-            return "Taskname is: " + data.taskname + " ,ID is: " + data.id + " , description is: " + data.description + " , status is: " +data.status
-                    + ", created at: " + data.date_begin + " , deadline at: " + data.date_end + "\\n"
+            return "Taskname is: " + data.taskname + " ,ID is: " + data.id + " , description is: " + data.description + " , status is: " + data.status
+                    + ", created at: " + data.date_begin + " , deadline at: " + data.date_end + "\\n";
         }
 
     }
