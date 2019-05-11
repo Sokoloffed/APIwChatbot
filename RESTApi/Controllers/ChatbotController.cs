@@ -61,23 +61,44 @@ namespace RESTApi.Controllers
             }
             else if (update.@event == "message")
             {
-                if (update.message.text == "GET")
+                if (update.message.text == "HELP")
+                {
+                    string help = "Print GET ALL USERS to get info about all users, " + "\n"
+                        + "Print GET ALL BRANCHES to get info about all branches, " + "\n"
+                        + "Print GET ALL TASKS to get info about all tasks " + "\n";
+                    SendMessage(update.sender.id, help);
+                }
+
+                if (update.message.text == "GET ALL USERS")
                 {
                     using (TaskManagerDBEntities ctx = new TaskManagerDBEntities())
                     {
                         DataRepository repository = new DataRepository();
                         var data =  repository.GetAllUsers().ToList().Select(c => modelFactory.Create(c));
-                        StringBuilder sb = new StringBuilder();
-                        sb.Append(data.ElementAt(0).username);
+                        //sb.Append(data.ElementAt(0).username);
                         //JsonConvert.SerializeObject(new { sb = sb });
-                        SendMessage(update.sender.id, sb.ToString());
+                        string message = ConvertUsers(data);
+                        SendMessage(update.sender.id, message);
                     }
                 }
-                else if(update.message.text == "fuck")
+                if(update.message.text=="GET ALL BRANCHES")
                 {
-                    SendMessage(update.sender.id, "You!");
+                    DataRepository repository = new DataRepository();
+                    var data = repository.GetAllBranches().ToList().Select(c => modelFactory.Create(c));
+                    string message = ConvertBranches(data);
+                    SendMessage(update.sender.id, message);
+                    
                 }
-                else SendMessage(update.sender.id, "Hello world (message event)!!!");
+
+                if(update.message.text=="GET ALL TASKS")
+                {
+                    DataRepository repository = new DataRepository();
+                    var data = repository.GetAllTasks().ToList().Select(c => modelFactory.Create(c));
+                    string message = ConvertTasks(data);
+                    SendMessage(update.sender.id, message);
+                }
+                
+                else SendMessage(update.sender.id, "Wrong command, please, print HELP to get info about posible actions. ");
             }
             else
             {
@@ -89,6 +110,7 @@ namespace RESTApi.Controllers
 
         public string SendMessage(string tmpRecipient, string tmpMessage)
         {
+            string log = tmpMessage;
             string tmpMessagePattern = "{\"receiver\":\"" + tmpRecipient + "\",\"min_api_version\":1,\"sender\":{\"name\":\"" + BotName + "\",\"avatar\":\"" + BotAvatar + "\"},\"tracking_data\":\"tracking data\",\"type\":\"text\",\"text\":\"" + tmpMessage + "\"}";
 
             var response = RequestHelper(HttpMethod.Post, new Uri(URLToSendMessage), tmpMessagePattern);
@@ -138,6 +160,38 @@ namespace RESTApi.Controllers
             DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             TimeSpan diff = date.ToUniversalTime() - origin;
             return Math.Floor(diff.TotalSeconds) * 1000;
+        }
+
+        public string ConvertUsers(IEnumerable<UsersModel> data)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach(UsersModel m in data)
+            {
+                sb.Append("ID is: " + m.id + "Username is: " + m.username + "\\n");
+            }
+            return sb.ToString();
+        }
+
+        public string ConvertBranches(IEnumerable<BranchesModel> data)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach(BranchesModel m in data)
+            {
+                sb.Append("Branchname is: " + m.branchname + ", ID is: " + m.id + ", description is: " + m.description + ", created at"
+                    + m.created_date + ", ID of creator: " + m.creator_id + "\\n");
+            }
+            return sb.ToString();
+        }
+
+        public string ConvertTasks(IEnumerable<TasksModel> data)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach(TasksModel m in data)
+            {
+                sb.Append("Taskname is: " + m.taskname + " ,ID is: " + m.id + " , description is: " + m.description + " , status is: " + m.status
+                    + ", created at: " + m.date_begin + " , deadline at: " + m.date_end + "\\n");
+            }
+            return sb.ToString();
         }
     }
 }
