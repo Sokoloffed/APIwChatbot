@@ -22,7 +22,13 @@ namespace RESTApi.Controllers
         public static string API_HEADER_CONST = "X-Viber-Auth-Token";
 
         public string BotAvatar = "https://wcf.plan.net.ua/public/ava100.jpg";
-        public string BotName = "Danil tester"; 
+        public string BotName = "Danil tester";
+
+        public delegate void metaEvent(string type);
+
+        //public event metaEvent get;
+        //public event metaEvent help;
+
 
         ModelFactory modelFactory = new ModelFactory();
 
@@ -31,6 +37,7 @@ namespace RESTApi.Controllers
         [HttpPost]
         public string Get(CallbackData update)
         {
+
             if (update.@event == "webhook")
             {
 
@@ -63,42 +70,128 @@ namespace RESTApi.Controllers
             {
                 if (update.message.text == "HELP")
                 {
-                    string help = "Print GET ALL USERS to get info about all users, " + "\n"
-                        + "Print GET ALL BRANCHES to get info about all branches, " + "\n"
+
+                    string help = "Print GET ALL USERS to get info about all users, " + "\\n"
+                        + "Print GET ALL BRANCHES to get info about all branches, " + "\\n"
                         + "Print GET ALL TASKS to get info about all tasks " + "\n";
                     SendMessage(update.sender.id, help);
                 }
 
-                if (update.message.text == "GET ALL USERS")
+                else if (Logic.isGet && Logic.isGetUsers)
+                {
+                    if (update.message.text == "All")
+                    {
+                        DataRepository repository = new DataRepository();
+                        var data = repository.GetAllUsers().ToList().Select(c => modelFactory.Create(c));
+                        //sb.Append(data.ElementAt(0).username);
+                        //JsonConvert.SerializeObject(new { sb = sb });
+                        string message = ConvertUsers(data);
+                        SendMessage(update.sender.id, message);
+                        return "";
+                    }
+                    else if (update.message.text == "Filter")
+                    {
+                        SendMessage(update.sender.id, "Temporary unavaliable");
+                        return "";
+                    }
+                    else if (update.message.text == "Back")
+                    {
+                        Logic.isGetUsers = false;
+                        SendMessage(update.sender.id, "Please, print what kind of data do you want to work with: Users, Branches, Tasks ");
+                        return "";
+                    }
+                    else
+                    {
+                        SendMessage(update.sender.id, "Print All to get all data from Users table, print Filter to start filtering, print Back to return ");
+                        return "";
+                    }
+
+                }
+
+                else if (Logic.isGet)
+                {
+                    
+
+                    if (update.message.text == "Users")
+                    {
+                        Logic.isGetUsers = true;
+                        SendMessage(update.sender.id, "Print All to get all data from Users table, print Filter to start filtering, print Back to return ");
+                        return "";
+                    }
+                    else if (update.message.text == "Branches")
+                    {
+                        Logic.isGetBranches = true;
+                        SendMessage(update.sender.id, "Print All to get all data from Branches table, print Filter to start filtering, print Back to return ");
+                        return "";
+                    }
+                    else if (update.message.text == "Tasks")
+                    {
+                        Logic.isGetTasks = true;
+                        SendMessage(update.sender.id, "Print All to get all data from Tasks table, print Filter to start filtering, print Back to return ");
+                        return "";
+                    }
+                    else if (update.message.text == "Back")
+                    {
+                        Logic.isGet = false;
+                        return "";
+                    }
+
+
+                    else SendMessage(update.sender.id, "Please, print what kind of data do you want to work with: Users, Branches, Tasks, or print Back to get back");
+                }
+
+                else if (!Logic.isGet && !Logic.isPost)
+                {
+                    if (update.message.text == "Get")
+                    {
+                        Logic.isGet = true;
+                        SendMessage(update.sender.id, "Please, print what kind of data do you want to work with: Users, Branches, Tasks ");
+                        return "";
+                    }
+
+                    else SendMessage(update.sender.id, "If you want to get data from database, print Get; " + "\\n"
+                        + "if you want to Post new data into database, print Post; " + "\\n"
+                        + "if you need help, print Help; ");
+                    return "";
+                }
+
+                
+
+
+
+
+
+                else if (update.message.text == "GET ALL USERS")
                 {
                     using (TaskManagerDBEntities ctx = new TaskManagerDBEntities())
                     {
                         DataRepository repository = new DataRepository();
-                        var data =  repository.GetAllUsers().ToList().Select(c => modelFactory.Create(c));
+                        var data = repository.GetAllUsers().ToList().Select(c => modelFactory.Create(c));
                         //sb.Append(data.ElementAt(0).username);
                         //JsonConvert.SerializeObject(new { sb = sb });
                         string message = ConvertUsers(data);
                         SendMessage(update.sender.id, message);
                     }
                 }
-                if(update.message.text=="GET ALL BRANCHES")
+                else if (update.message.text == "GET ALL BRANCHES")
                 {
                     DataRepository repository = new DataRepository();
                     var data = repository.GetAllBranches().ToList().Select(c => modelFactory.Create(c));
                     string message = ConvertBranches(data);
                     SendMessage(update.sender.id, message);
-                    
+
                 }
 
-                if(update.message.text=="GET ALL TASKS")
+                else if (update.message.text == "GET ALL TASKS")
                 {
                     DataRepository repository = new DataRepository();
                     var data = repository.GetAllTasks().ToList().Select(c => modelFactory.Create(c));
                     string message = ConvertTasks(data);
                     SendMessage(update.sender.id, message);
                 }
+                else return "";
                 
-                else SendMessage(update.sender.id, "Wrong command, please, print HELP to get info about posible actions. ");
+                //else SendMessage(update.sender.id, "Wrong command, please, print HELP to get info about posible actions. ");
             }
             else
             {
@@ -193,5 +286,45 @@ namespace RESTApi.Controllers
             }
             return sb.ToString();
         }
+    }
+
+    public static class Logic
+    {
+        public static bool isBegin { get; set; }
+
+        public static bool isGetUsers { get; set; }
+        public static bool isGetBranches { get; set; }
+        public static bool isGetTasks { get; set; }
+        public static bool isGetChoosing { get; set; }
+
+        public static bool isGet { get; set; }
+
+
+        public static bool isPostUsers { get; set; }
+        public static bool isPostBranches { get; set; }
+        public static bool isPostTasks { get; set; }
+
+        public static bool isPost { get; set; }
+
+
+        public static bool isNew { get; set; }
+
+        public static void setTablesFalse()
+        {
+            isGetUsers = false;
+            isGetBranches = false;
+            isGetTasks = false;
+            isGetChoosing = false;
+
+            isPostUsers = false;
+            isPostBranches = false;
+            isPostTasks = false;
+
+        }
+
+
+
+        
+
     }
 }
