@@ -130,15 +130,34 @@ namespace RESTApi.Controllers
                             else if (m4.Success)
                             {
                                 string param = text.Substring(9, text.Length - 9);
-                                string message = ConvertBranches(data.GetBranchesViaBeginTime(Convert.ToDateTime(param)).ToList().Select(c => modelFactory.Create(c)));
-                                SendMessage(update.sender.id, message);
+
+                                if (Logic.isGetTasks)
+                                {
+                                    string message = ConvertTasks(data.GetTaskViaBeginTime(Convert.ToDateTime(param)).ToList().Select(c => modelFactory.Create(c)));
+                                    SendMessage(update.sender.id, message);
+                                }
+                                else if (Logic.isGetBranches)
+                                {
+                                    string message = ConvertBranches(data.GetBranchesViaBeginTime(Convert.ToDateTime(param)).ToList().Select(c => modelFactory.Create(c)));
+                                    SendMessage(update.sender.id, message);
+                                }
+                                
                             }
                             else if (m5.Success)
                             {
                                 string param = text.Substring(9, text.Length - 9);
                                 int ID = Convert.ToInt32(param);
-                                string message = ConvertBranches(data.GetBranchesViaCreatorID(ID).ToList().Select(c => modelFactory.Create(c)));
-                                SendMessage(update.sender.id, message);
+                                if (Logic.isGetTasks)
+                                {
+                                    string message = ConvertTasks(data.GetTaskViaCreatorID(ID).ToList().Select(c => modelFactory.Create(c)));
+                                    SendMessage(update.sender.id, message);
+                                }
+                                else if (Logic.isGetBranches)
+                                {
+                                    string message = ConvertBranches(data.GetBranchesViaCreatorID(ID).ToList().Select(c => modelFactory.Create(c)));
+                                    SendMessage(update.sender.id, message);
+                                }
+                                
                             }
 
                         }
